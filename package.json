@@ -1,0 +1,15 @@
+{
+  "name": "socket-movies",
+  "version": "1.0.0",
+  "description": "Socket.io sever side for movies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Haider Daij",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.4"
+  }
+}
