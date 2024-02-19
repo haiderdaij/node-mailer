@@ -6,15 +6,17 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
+const IP_ADDRESS = "192.168.1.5";
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: `http://${IP_ADDRESS}:3000`,
     methods: ["GET", "POST"],
   },
 });
 
-server.listen(3500, () => {
-  console.log("Server running on port 3500");
+server.listen(3500, "0.0.0.0", () => {
+  console.log("Server is running on port 3500");
 });
 
 io.on("connection", (socket) => {
