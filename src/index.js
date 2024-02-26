@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 const PORT = 3500;
-const IP_ADDRESS = "172.20.10.4";
+const IP_ADDRESS = process.env.IP_ADDRESS;
 
 let transporter = nodemailer.createTransport({
   service: process.env.SERVICE_TYPE,
