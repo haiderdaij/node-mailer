@@ -1,22 +1,52 @@
+require("dotenv").config();
+
 const express = require("express");
 const { movies } = require("./movies");
 const http = require("http");
 const { Server } = require("socket.io");
-
+const nodemailer = require("nodemailer");
 const app = express();
-const server = http.createServer(app);
+app.use(express.json());
 
-const IP_ADDRESS = "192.168.1.5";
+const PORT = 3500;
+const IP_ADDRESS = "172.20.10.4";
+
+let transporter = nodemailer.createTransport({
+  service: process.env.SERVICE_TYPE,
+  auth: {
+    user: process.env.USER_NAME,
+    pass: process.env.PASS_WORD,
+  },
+});
+
+app.post("/send-email", async (req, res) => {
+  try {
+    let info = await transporter.sendMail({
+      from: process.env.USER_NAME,
+      to: "jack19201881@gmail.com",
+      subject: "Subject line",
+      text: "Hello Jack!",
+    });
+    let messageId = info.messageId;
+    console.log("Message sent: %s", messageId);
+    res.send({ message: "Email sent successfully", messageId: messageId });
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    res.status(500).send({ error: "Failed to send email" });
+  }
+});
+
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: `http://${IP_ADDRESS}:3000`,
+    origin: [`http://${IP_ADDRESS}:3000`, "http://localhost:3000"],
     methods: ["GET", "POST"],
   },
 });
 
-server.listen(3500, "0.0.0.0", () => {
-  console.log("Server is running on port 3500");
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 io.on("connection", (socket) => {
