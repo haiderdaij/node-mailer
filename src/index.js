@@ -40,9 +40,7 @@ app.post("/send-email", async (req, res) => {
     res.status(500).send({ error: "Failed to send email" });
   }
 });
-app.get("/", async () => {
-  return "Hi there";
-});
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 const server = http.createServer(app);
 
