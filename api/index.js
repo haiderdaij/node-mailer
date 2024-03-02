@@ -1,48 +1,48 @@
 // Configurations and Imports
-// require("dotenv").config();
+require("dotenv").config();
 const express = require("express");
-// const http = require("http");
-// const { Server } = require("socket.io");
-// const nodemailer = require("nodemailer");
-// const movies = require("./movies").movies;
+const http = require("http");
+const { Server } = require("socket.io");
+const nodemailer = require("nodemailer");
+const movies = require("./movies").movies;
 
 // Initialize Express App
 const app = express();
-// app.use(express.json());
+app.use(express.json());
 
 // Email Transporter Configuration
-// const transporter = nodemailer.createTransport({
-//   service: process.env.SERVICE_TYPE,
-//   auth: {
-//     user: process.env.USER_NAME,
-//     pass: process.env.PASS_WORD,
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  service: process.env.SERVICE_TYPE,
+  auth: {
+    user: process.env.USER_NAME,
+    pass: process.env.PASS_WORD,
+  },
+});
 
 // Simple Root Route
 app.get("/", (req, res) => res.send("Hello there"));
 
 // Email Sending Route
-// app.post("/send-email", async (req, res) => {
-//   const { to, subject, text } = req.body;
+app.post("/send-email", async (req, res) => {
+  const { to, subject, text } = req.body;
 
-//   try {
-//     let info = await transporter.sendMail({
-//       from: process.env.USER_NAME,
-//       to,
-//       subject,
-//       text,
-//     });
-//     console.log("Message sent: %s", info.messageId);
-//     res.send({
-//       message: "Email sent successfully",
-//       messageId: info.messageId,
-//     });
-//   } catch (error) {
-//     console.error("Failed to send email:", error);
-//     res.status(500).send({ error: "Failed to send email" });
-//   }
-// });
+  try {
+    let info = await transporter.sendMail({
+      from: process.env.USER_NAME,
+      to,
+      subject,
+      text,
+    });
+    console.log("Message sent: %s", info.messageId);
+    res.send({
+      message: "Email sent successfully",
+      messageId: info.messageId,
+    });
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    res.status(500).send({ error: "Failed to send email" });
+  }
+});
 
 // HTTP Server and Socket.IO Configuration
 // const server = http.createServer(app);
