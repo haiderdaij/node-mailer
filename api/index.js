@@ -1,20 +1,20 @@
-// require("dotenv").config();
+require("dotenv").config();
 const express = require("express");
-// const http = require("http");
-// const { Server } = require("socket.io");
-// const nodemailer = require("nodemailer");
-// const movies = require("./movies");
+const http = require("http");
+const { Server } = require("socket.io");
+const nodemailer = require("nodemailer");
+const movies = require("./movies");
 
 const app = express();
-// app.use(express.json());
+app.use(express.json());
 
-// const transporter = nodemailer.createTransport({
-//   service: process.env.SERVICE_TYPE,
-//   auth: {
-//     user: process.env.USER_NAME,
-//     pass: process.env.PASS_WORD,
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  service: process.env.SERVICE_TYPE,
+  auth: {
+    user: process.env.USER_NAME,
+    pass: process.env.PASS_WORD,
+  },
+});
 
 app.get("/", (req, res) => res.send("Hello there"));
 
