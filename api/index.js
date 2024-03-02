@@ -1,38 +1,42 @@
+// Configurations and Imports
 require("dotenv").config();
-
 const express = require("express");
-const { movies } = require("./movies");
 const http = require("http");
 const { Server } = require("socket.io");
 const nodemailer = require("nodemailer");
+const movies = require("../movies").movies;
+
+// Initialize Express App
 const app = express();
 app.use(express.json());
 
-const PORT = 3500;
-let transporter = nodemailer.createTransport({
+// Email Transporter Configuration
+const transporter = nodemailer.createTransport({
   service: process.env.SERVICE_TYPE,
   auth: {
     user: process.env.USER_NAME,
     pass: process.env.PASS_WORD,
   },
 });
+
+// Simple Root Route
 app.get("/", (req, res) => res.send("Hello there"));
 
+// Email Sending Route
 app.post("/send-email", async (req, res) => {
   const { to, subject, text } = req.body;
 
   try {
     let info = await transporter.sendMail({
       from: process.env.USER_NAME,
-      to: to,
-      subject: subject,
-      text: text,
+      to,
+      subject,
+      text,
     });
-    let messageId = info.messageId;
-    console.log("Message sent: %s", messageId);
+    console.log("Message sent: %s", info.messageId);
     res.send({
       message: "Email sent successfully",
-      messageId: messageId,
+      messageId: info.messageId,
     });
   } catch (error) {
     console.error("Failed to send email:", error);
@@ -40,8 +44,8 @@ app.post("/send-email", async (req, res) => {
   }
 });
 
+// HTTP Server and Socket.IO Configuration
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -49,18 +53,19 @@ const io = new Server(server, {
   },
 });
 
+// Server Listen
+const PORT = process.env.PORT || 3500;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// Socket.IO Connection Handling
 io.on("connection", (socket) => {
   console.log("New connection:", socket.id);
-
   let movieIndex = 0;
   const intervalId = setInterval(() => {
     if (movieIndex < movies.length) {
-      socket.emit("movie", movies[movieIndex]);
-      movieIndex++;
+      socket.emit("movie", movies[movieIndex++]);
     } else {
       clearInterval(intervalId);
     }
