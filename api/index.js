@@ -45,38 +45,38 @@ app.post("/send-email", async (req, res) => {
 });
 
 // HTTP Server and Socket.IO Configuration
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 // Server Listen
 const PORT = 3500;
 app.listen(PORT, () => console.log("Server ready on port 3500."));
 
-// server.listen(PORT, "0.0.0.0", () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Socket.IO Connection Handling
-// io.on("connection", (socket) => {
-//   console.log("New connection:", socket.id);
-//   let movieIndex = 0;
-//   const intervalId = setInterval(() => {
-//     if (movieIndex < movies.length) {
-//       socket.emit("movie", movies[movieIndex++]);
-//     } else {
-//       clearInterval(intervalId);
-//     }
-//   }, 6000);
+io.on("connection", (socket) => {
+  console.log("New connection:", socket.id);
+  let movieIndex = 0;
+  const intervalId = setInterval(() => {
+    if (movieIndex < movies.length) {
+      socket.emit("movie", movies[movieIndex++]);
+    } else {
+      clearInterval(intervalId);
+    }
+  }, 6000);
 
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected:", socket.id);
-//     clearInterval(intervalId);
-//   });
-// });
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+    clearInterval(intervalId);
+  });
+});
 
 module.exports = app;
