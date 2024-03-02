@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 const app = express();
 app.use(express.json());
 
-const PORT = 3500;
+const PORT = 3000;
 
 // let transporter = nodemailer.createTransport({
 //   service: process.env.SERVICE_TYPE,
@@ -40,7 +40,7 @@ const PORT = 3500;
 //   }
 // });
 app.get("/", (req, res) => res.send("Express on Vercel"));
-app.listen(PORT, () => console.log("Server ready on port 3500."));
+app.listen(PORT, () => console.log("Server ready on port 3000."));
 
 module.exports = app;
 // const server = http.createServer(app);
