@@ -8,69 +8,66 @@ const nodemailer = require("nodemailer");
 const app = express();
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = 3500;
+let transporter = nodemailer.createTransport({
+  service: process.env.SERVICE_TYPE,
+  auth: {
+    user: process.env.USER_NAME,
+    pass: process.env.PASS_WORD,
+  },
+});
+app.get("/", (req, res) => res.send("Hello there"));
 
-// let transporter = nodemailer.createTransport({
-//   service: process.env.SERVICE_TYPE,
-//   auth: {
-//     user: process.env.USER_NAME,
-//     pass: process.env.PASS_WORD,
-//   },
-// });
+app.post("/send-email", async (req, res) => {
+  const { to, subject, text } = req.body;
 
-// app.post("/send-email", async (req, res) => {
-//   const { to, subject, text } = req.body;
+  try {
+    let info = await transporter.sendMail({
+      from: process.env.USER_NAME,
+      to: to,
+      subject: subject,
+      text: text,
+    });
+    let messageId = info.messageId;
+    console.log("Message sent: %s", messageId);
+    res.send({
+      message: "Email sent successfully",
+      messageId: messageId,
+    });
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    res.status(500).send({ error: "Failed to send email" });
+  }
+});
 
-//   try {
-//     let info = await transporter.sendMail({
-//       from: process.env.USER_NAME,
-//       to: to,
-//       subject: subject,
-//       text: text,
-//     });
-//     let messageId = info.messageId;
-//     console.log("Message sent: %s", messageId);
-//     res.send({
-//       message: "Email sent successfully",
-//       messageId: messageId,
-//     });
-//   } catch (error) {
-//     console.error("Failed to send email:", error);
-//     res.status(500).send({ error: "Failed to send email" });
-//   }
-// });
-app.get("/", (req, res) => res.send("Express on Vercel"));
-app.listen(PORT, () => console.log("Server ready on port 3000."));
+const server = http.createServer(app);
 
-module.exports = app;
-// const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
-// server.listen(PORT, "0.0.0.0", () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+io.on("connection", (socket) => {
+  console.log("New connection:", socket.id);
 
-// io.on("connection", (socket) => {
-//   console.log("New connection:", socket.id);
+  let movieIndex = 0;
+  const intervalId = setInterval(() => {
+    if (movieIndex < movies.length) {
+      socket.emit("movie", movies[movieIndex]);
+      movieIndex++;
+    } else {
+      clearInterval(intervalId);
+    }
+  }, 6000);
 
-//   let movieIndex = 0;
-//   const intervalId = setInterval(() => {
-//     if (movieIndex < movies.length) {
-//       socket.emit("movie", movies[movieIndex]);
-//       movieIndex++;
-//     } else {
-//       clearInterval(intervalId);
-//     }
-//   }, 6000);
-
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected:", socket.id);
-//     clearInterval(intervalId);
-//   });
-// });
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+    clearInterval(intervalId);
+  });
+});
