@@ -1,10 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 const transporter = nodemailer.createTransport({
   service: process.env.SERVICE_TYPE,
   auth: {
