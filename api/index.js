@@ -2,6 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+const movies = require("../movies");
+
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(express.json());
@@ -11,6 +16,7 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+
 const transporter = nodemailer.createTransport({
   service: process.env.SERVICE_TYPE,
   auth: {
@@ -43,8 +49,33 @@ app.post("/send-email", async (req, res) => {
     res.status(500).send({ error: "Failed to send email" });
   }
 });
-const PORT = process.env.PORT;
 
-app.listen(PORT, () => console.log(`Server ready on port ${PORT}.`));
+const server = http.createServer(app);
 
-module.exports = app;
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+io.on("connection", (socket) => {
+  console.log("New connection:", socket.id);
+  let movieIndex = 0;
+  const intervalId = setInterval(() => {
+    if (movieIndex < movies.length) {
+      socket.emit("movie", movies[movieIndex++]);
+    } else {
+      clearInterval(intervalId);
+    }
+  }, 6000);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+    clearInterval(intervalId);
+  });
+});
