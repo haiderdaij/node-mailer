@@ -4,7 +4,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const nodemailer = require("nodemailer");
-const movies = require("../movies").movies;
+const movies = require("./movies").movies;
 
 // Initialize Express App
 const app = express();
@@ -76,3 +76,8 @@ io.on("connection", (socket) => {
     clearInterval(intervalId);
   });
 });
+
+module.exports = {
+  app,
+  server,
+};
