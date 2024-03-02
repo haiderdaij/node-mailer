@@ -1,10 +1,10 @@
 // Configurations and Imports
-require("dotenv").config();
+// require("dotenv").config();
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const nodemailer = require("nodemailer");
-const movies = require("./movies").movies;
+// const http = require("http");
+// const { Server } = require("socket.io");
+// const nodemailer = require("nodemailer");
+// const movies = require("./movies").movies;
 
 // Initialize Express App
 const app = express();
@@ -79,7 +79,4 @@ app.listen(PORT, () => console.log("Server ready on port 3500."));
 //   });
 // });
 
-module.exports = {
-  app,
-  // server,
-};
+module.exports = app;
