@@ -20,16 +20,21 @@ let transporter = nodemailer.createTransport({
 });
 
 app.post("/send-email", async (req, res) => {
+  const { to, subject, text } = req.body;
+
   try {
     let info = await transporter.sendMail({
       from: process.env.USER_NAME,
-      to: "jack19201881@gmail.com",
-      subject: "Subject line",
-      text: "Hello Jack!",
+      to: to,
+      subject: subject,
+      text: text,
     });
     let messageId = info.messageId;
     console.log("Message sent: %s", messageId);
-    res.send({ message: "Email sent successfully", messageId: messageId });
+    res.send({
+      message: "Email sent successfully",
+      messageId: messageId,
+    });
   } catch (error) {
     console.error("Failed to send email:", error);
     res.status(500).send({ error: "Failed to send email" });
