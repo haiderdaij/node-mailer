@@ -6,16 +6,14 @@ const http = require("http");
 const { Server } = require("socket.io");
 const movies = require("../movies");
 
-console.log(movies.length);
-
 const PORT = process.env.PORT;
 const IP_ADDRESS = process.env.IP_ADDRESS;
 
 const app = express();
 app.use(express.json());
 
-let x = 10;
-console.log(x);
+let xy = 10;
+console.log(xy);
 
 app.use(
   cors({
