@@ -12,6 +12,9 @@ const IP_ADDRESS = process.env.IP_ADDRESS;
 const app = express();
 app.use(express.json());
 
+let x = 10;
+console.log(x);
+
 app.use(
   cors({
     origin: `http://${IP_ADDRESS}:3000`,
