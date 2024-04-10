@@ -5,16 +5,14 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const movies = require("../movies");
-
 const PORT = process.env.PORT;
 const IP_ADDRESS = process.env.IP_ADDRESS;
-
 const app = express();
 app.use(express.json());
 
 app.use(
   cors({
-    origin: `http://${IP_ADDRESS}:3000`,
+    origin: [`http://${IP_ADDRESS}:3000`, `http://localhost:3000`],
     methods: ["GET", "POST"],
   })
 );
@@ -56,7 +54,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: `http://${IP_ADDRESS}:3000`,
+    origin: [`http://${IP_ADDRESS}:3000`, `http://localhost:3000`],
     methods: ["GET", "POST"],
   },
 });
