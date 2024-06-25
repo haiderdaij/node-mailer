@@ -10,6 +10,9 @@ const IP_ADDRESS = process.env.IP_ADDRESS;
 const app = express();
 app.use(express.json());
 
+let xy = 10;
+console.log(xy);
+
 app.use(
   cors({
     origin: [`http://${IP_ADDRESS}:3000`, `http://localhost:3000`],
