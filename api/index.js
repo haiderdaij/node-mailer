@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 
 let xy = 10;
-console.log(xy);
+console.log(`xy: `, xy);
 
 app.use(
   cors({
